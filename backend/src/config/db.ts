@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
     try {
-        const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/personalized_learning';
+        const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/personalized_learning';
         const conn = await mongoose.connect(mongoUri);
         console.log(`MongoDB Connected: ${conn.connection.host}`);
         console.log(`Database: ${conn.connection.db?.databaseName}`);
