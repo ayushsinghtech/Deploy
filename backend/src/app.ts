@@ -50,6 +50,25 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/recommendation", recommendationRoutes);
 app.use('/api/learning-path', learningPathRoutes);
 
+// Root endpoint for testing
+app.get('/', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        message: 'Masterly Backend API is running',
+        version: '1.0.0',
+        endpoints: {
+            health: '/api/health',
+            auth: '/api/auth',
+            users: '/api/users',
+            concepts: '/api/concepts',
+            admin: '/api/admin',
+            quiz: '/api/quiz',
+            recommendation: '/api/recommendation',
+            learningPath: '/api/learning-path'
+        }
+    });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Server is running' });
