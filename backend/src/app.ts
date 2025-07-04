@@ -41,14 +41,22 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 // --- API Route Mounting ---
+console.log('Mounting API routes...');
 app.use('/api/auth', authRoutes);
+console.log('Auth routes mounted at /api/auth');
 app.use('/api/users', userRoutes);
+console.log('User routes mounted at /api/users');
 app.use('/api/concepts', conceptRoutes);
+console.log('Concept routes mounted at /api/concepts');
 // app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
+console.log('Admin routes mounted at /api/admin');
 app.use("/api/quiz", quizRoutes);
+console.log('Quiz routes mounted at /api/quiz');
 app.use("/api/recommendation", recommendationRoutes);
+console.log('Recommendation routes mounted at /api/recommendation');
 app.use('/api/learning-path', learningPathRoutes);
+console.log('Learning path routes mounted at /api/learning-path');
 
 // Root endpoint for testing
 app.get('/', (req, res) => {
@@ -72,6 +80,40 @@ app.get('/', (req, res) => {
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Server is running' });
+});
+
+// Debug route to see all available routes
+app.get('/api/debug/routes', (req, res) => {
+    const routes: any[] = [];
+    app._router.stack.forEach((middleware: any) => {
+        if (middleware.route) {
+            routes.push({
+                path: middleware.route.path,
+                methods: Object.keys(middleware.route.methods)
+            });
+        } else if (middleware.name === 'router') {
+            middleware.handle.stack.forEach((handler: any) => {
+                if (handler.route) {
+                    routes.push({
+                        path: handler.route.path,
+                        methods: Object.keys(handler.route.methods)
+                    });
+                }
+            });
+        }
+    });
+    res.json({ routes });
+});
+
+// Catch-all route for debugging
+app.use('*', (req, res) => {
+    console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({ 
+        error: 'Route not found', 
+        method: req.method, 
+        url: req.originalUrl,
+        availableRoutes: ['/api/auth', '/api/users', '/api/concepts', '/api/admin', '/api/quiz', '/api/recommendation', '/api/learning-path']
+    });
 });
 
 // --- Server Initialization ---
