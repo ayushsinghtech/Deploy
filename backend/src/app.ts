@@ -20,6 +20,7 @@ import learningPathRoutes from './routes/learningPathRoutes';
 
 const app: Express = express();
 
+// Connect to database
 connectDB();
 
 // --- THIS IS THE CRUCIAL FIX ---
@@ -28,7 +29,8 @@ connectDB();
 app.use(cors({
     origin: [
         process.env.CLIENT_URL || 'http://localhost:3000',
-        'https://masterly-deploy-frontend.vercel.app'
+        'https://masterly-deploy-frontend.vercel.app',
+        'https://masterly-deploy.vercel.app'
     ],
     credentials: true,
 }));
@@ -48,9 +50,18 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/recommendation", recommendationRoutes);
 app.use('/api/learning-path', learningPathRoutes);
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'OK', message: 'Server is running' });
+});
 
 // --- Server Initialization ---
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running in '${process.env.NODE_ENV || 'development'}' mode on port ${PORT}`);
-});
+// Only start the server if we're not in a serverless environment
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server is running in '${process.env.NODE_ENV || 'development'}' mode on port ${PORT}`);
+    });
+}
+
+export default app;
