@@ -14,4 +14,9 @@ app.use(cors({
   credentials: true,
 }));
 
-// ...existing code to start the server...
+// ...existing code to set up routes and middleware...
+
+// Do NOT call app.listen here
+
+module.exports = app;
+export default app;
