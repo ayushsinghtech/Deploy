@@ -4,13 +4,15 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from '../models/userModel';
 import { IUser } from '../types';
 
-passport.use(
-    new GoogleStrategy(
-        {
-            clientID: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
-        },
+// Only initialize Google OAuth if environment variables are present
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_CALLBACK_URL) {
+    passport.use(
+        new GoogleStrategy(
+            {
+                clientID: process.env.GOOGLE_CLIENT_ID as string,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+                callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
+            },
         async (accessToken, refreshToken, profile, done) => {
             try {
                 // 1. Check if a user with this Google ID already exists.
@@ -48,7 +50,10 @@ passport.use(
             }
         }
     )
-);
+    );
+} else {
+    console.log('Google OAuth not configured - skipping Google authentication setup');
+}
 
 passport.serializeUser((user, done) => {
     done(null, (user as IUser).id);
