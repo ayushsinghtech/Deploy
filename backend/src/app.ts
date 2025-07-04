@@ -26,7 +26,10 @@ connectDB();
 // Configure CORS to allow requests from your frontend's origin
 // and to allow cookies to be sent back and forth.
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: [
+        process.env.CLIENT_URL || 'http://localhost:3000',
+        'https://masterly-deploy-frontend.vercel.app'
+    ],
     credentials: true,
 }));
 
