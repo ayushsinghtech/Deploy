@@ -8,6 +8,7 @@
         .success { background-color: #d4edda; border-color: #c3e6cb; }
         .error { background-color: #f8d7da; border-color: #f5c6cb; }
         button { padding: 10px 20px; margin: 5px; }
+        input { padding: 8px; margin: 5px; width: 400px; }
     </style>
 </head>
 <body>
@@ -15,7 +16,8 @@
     
     <div class="test">
         <h3>Backend URL:</h3>
-        <p id="backend-url">https://masterly-deploy-production.up.railway.app</p>
+        <input type="text" id="backend-url" value="https://masterly-deploy-production.up.railway.app" placeholder="Enter your backend URL">
+        <button onclick="updateBackendUrl()">Update URL</button>
     </div>
 
     <div class="test">
@@ -37,17 +39,62 @@
         <div id="cors-result"></div>
     </div>
 
+    <div class="test">
+        <h3>Network Test:</h3>
+        <button onclick="testNetwork()">Test Network Connectivity</button>
+        <div id="network-result"></div>
+    </div>
+
     <script>
-        const BACKEND_URL = 'https://masterly-deploy-production.up.railway.app';
+        let BACKEND_URL = 'https://masterly-deploy-production.up.railway.app';
+
+        function updateBackendUrl() {
+            BACKEND_URL = document.getElementById('backend-url').value;
+            console.log('Updated backend URL:', BACKEND_URL);
+        }
+
+        async function testNetwork() {
+            const resultDiv = document.getElementById('network-result');
+            try {
+                // Test basic connectivity
+                const startTime = Date.now();
+                const response = await fetch(`${BACKEND_URL}/api/health`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ Network Test Success! Response time: ${responseTime}ms<br>Response: ${JSON.stringify(data)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Network Test Failed: HTTP ${response.status} ${response.statusText}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Test Failed: ${error.message}<br>This might be a CORS issue or the backend is not accessible.</div>`;
+            }
+        }
 
         async function testBackendHealth() {
             const resultDiv = document.getElementById('health-result');
             try {
-                const response = await fetch(`${BACKEND_URL}/api/health`);
-                const data = await response.json();
-                resultDiv.innerHTML = `<div class="success">✅ Backend Health: ${JSON.stringify(data)}</div>`;
+                console.log('Testing backend health at:', `${BACKEND_URL}/api/health`);
+                const response = await fetch(`${BACKEND_URL}/api/health`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ Backend Health: ${JSON.stringify(data)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Backend Health Error: HTTP ${response.status} ${response.statusText}</div>`;
+                }
             } catch (error) {
-                resultDiv.innerHTML = `<div class="error">❌ Backend Health Error: ${error.message}</div>`;
+                resultDiv.innerHTML = `<div class="error">❌ Backend Health Error: ${error.message}<br>Try checking the URL or network connectivity.</div>`;
             }
         }
 
@@ -55,7 +102,8 @@
             const resultDiv = document.getElementById('api-result');
             try {
                 const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    mode: 'cors'
                 });
                 const data = await response.json();
                 resultDiv.innerHTML = `<div class="success">✅ Auth Endpoint: ${JSON.stringify(data)}</div>`;
@@ -67,7 +115,9 @@
         async function testConceptsEndpoint() {
             const resultDiv = document.getElementById('api-result');
             try {
-                const response = await fetch(`${BACKEND_URL}/api/concepts`);
+                const response = await fetch(`${BACKEND_URL}/api/concepts`, {
+                    mode: 'cors'
+                });
                 const data = await response.json();
                 resultDiv.innerHTML = `<div class="success">✅ Concepts Endpoint: ${JSON.stringify(data)}</div>`;
             } catch (error) {
@@ -83,12 +133,13 @@
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    mode: 'cors'
                 });
                 const data = await response.json();
                 resultDiv.innerHTML = `<div class="success">✅ CORS Test Success: ${JSON.stringify(data)}</div>`;
             } catch (error) {
-                resultDiv.innerHTML = `<div class="error">❌ CORS Test Failed: ${error.message}</div>`;
+                resultDiv.innerHTML = `<div class="error">❌ CORS Test Failed: ${error.message}<br>This indicates a CORS configuration issue.</div>`;
             }
         }
     </script>

@@ -30,9 +30,14 @@ app.use(cors({
     origin: [
         process.env.CLIENT_URL || 'http://localhost:3000',
         'https://masterly-deploy-frontend.vercel.app',
-        'https://masterly-deploy.vercel.app'
+        'https://masterly-deploy.vercel.app',
+        'file://', // Allow local file access for testing
+        'null', // Allow null origin for testing
+        '*' // Allow all origins temporarily for testing
     ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // --- Core Middlewares ---

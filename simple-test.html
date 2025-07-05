@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Backend Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔗 Simple Backend Connection Test</h1>
+    
+    <div class="result">
+        <h3>Backend URL: https://masterly-deploy-production.up.railway.app</h3>
+    </div>
+
+    <div class="result">
+        <h3>Test 1: Direct Backend Access</h3>
+        <button onclick="testDirect()">Test Direct Access</button>
+        <div id="direct-result"></div>
+    </div>
+
+    <div class="result">
+        <h3>Test 2: Health Endpoint</h3>
+        <button onclick="testHealth()">Test /api/health</button>
+        <div id="health-result"></div>
+    </div>
+
+    <div class="result">
+        <h3>Test 3: Concepts Endpoint</h3>
+        <button onclick="testConcepts()">Test /api/concepts</button>
+        <div id="concepts-result"></div>
+    </div>
+
+    <div class="result">
+        <h3>Test 4: Manual URL Test</h3>
+        <p>Open these URLs in new browser tabs:</p>
+        <ul>
+            <li><a href="https://masterly-deploy-production.up.railway.app" target="_blank">Main Backend</a></li>
+            <li><a href="https://masterly-deploy-production.up.railway.app/api/health" target="_blank">Health Endpoint</a></li>
+            <li><a href="https://masterly-deploy-production.up.railway.app/api/concepts" target="_blank">Concepts Endpoint</a></li>
+        </ul>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://masterly-deploy-production.up.railway.app';
+
+        async function testDirect() {
+            const resultDiv = document.getElementById('direct-result');
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: 'GET',
+                    mode: 'no-cors' // Try without CORS
+                });
+                resultDiv.innerHTML = `<div class="success">✅ Direct access successful (no-cors mode)</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Direct access failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('health-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                resultDiv.innerHTML = `<div class="success">✅ Health endpoint accessible (no-cors mode)</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Health endpoint failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testConcepts() {
+            const resultDiv = document.getElementById('concepts-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/concepts`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                resultDiv.innerHTML = `<div class="success">✅ Concepts endpoint accessible (no-cors mode)</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Concepts endpoint failed: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Testing backend connectivity...');
+            testDirect();
+            setTimeout(testHealth, 1000);
+            setTimeout(testConcepts, 2000);
+        };
+    </script>
+</body>
+</html> 
