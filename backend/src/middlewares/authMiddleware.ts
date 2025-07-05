@@ -45,24 +45,37 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
  * finds the associated admin, and attaches the admin's data to the request object.
  */
 export const protectAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    console.log('protectAdmin middleware called');
+    console.log('Request cookies:', req.cookies);
+    console.log('Request headers:', req.headers);
+    
     let token;
     if (req.cookies && req.cookies.admin_token) {
         token = req.cookies.admin_token;
+        console.log('Found admin_token in cookies');
     } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
         token = req.headers.authorization.split(' ')[1];
+        console.log('Found admin_token in Authorization header');
     }
+    
     if (!token) {
+        console.log('No admin_token found');
         return res.status(401).json({ message: 'Not authorized, no token' });
     }
+    
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
+        console.log('Token verified, admin ID:', decoded.id);
         const admin = await Admin.findById(decoded.id).select('-password');
         if (!admin) {
+            console.log('Admin not found in database');
             return res.status(401).json({ message: 'Not authorized, admin not found' });
         }
+        console.log('Admin found:', admin.email);
         req.user = admin;
         next();
     } catch (error) {
+        console.error('Admin token verification error:', error);
         return res.status(401).json({ message: 'Not authorized, token failed' });
     }
 };

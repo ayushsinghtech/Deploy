@@ -131,10 +131,21 @@
                 const data = await response.text();
                 
                 if (response.ok) {
+                    // Check if admin_token cookie was set
+                    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+                        const [key, value] = cookie.trim().split('=');
+                        acc[key] = value;
+                        return acc;
+                    }, {});
+                    
+                    const hasAdminToken = cookies['admin_token'] || cookies[' admin_token'];
+                    
                     resultDiv.innerHTML = `
                         <div class="success">
                             <h4>✅ Admin Login Successful</h4>
                             <pre>${data}</pre>
+                            <p><strong>Admin Token Cookie:</strong> ${hasAdminToken ? '✅ Set' : '❌ Not Set'}</p>
+                            <p><strong>All Cookies:</strong> ${document.cookie || 'None'}</p>
                         </div>
                     `;
                 } else {
@@ -160,6 +171,21 @@
             const resultDiv = document.getElementById('adminProfileResult');
             
             resultDiv.innerHTML = '<p>Testing admin profile...</p>';
+            
+            // Check cookies before making request
+            const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+                const [key, value] = cookie.trim().split('=');
+                acc[key] = value;
+                return acc;
+            }, {});
+            
+            const hasAdminToken = cookies['admin_token'] || cookies[' admin_token'];
+            
+            resultDiv.innerHTML = `
+                <p>Testing admin profile...</p>
+                <p><strong>Admin Token Cookie:</strong> ${hasAdminToken ? '✅ Present' : '❌ Missing'}</p>
+                <p><strong>All Cookies:</strong> ${document.cookie || 'None'}</p>
+            `;
             
             try {
                 const response = await fetch(`${API_BASE}/admin/profile`, {
