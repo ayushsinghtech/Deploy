@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Public Data Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; max-height: 300px; }
+    </style>
+</head>
+<body>
+    <h1>🗄️ Public Data Test</h1>
+    
+    <div class="test">
+        <h3>Backend URL: https://masterly-deploy-production.up.railway.app</h3>
+    </div>
+
+    <div class="test">
+        <h3>Test Public Endpoints:</h3>
+        <button onclick="testConcepts()">Test /api/concepts</button>
+        <button onclick="testHealth()">Test /api/health</button>
+        <button onclick="testRoot()">Test Root Endpoint</button>
+        <div id="public-result"></div>
+    </div>
+
+    <div class="test">
+        <h3>Test Data Format:</h3>
+        <button onclick="testConceptsFormat()">Check Concepts Format</button>
+        <button onclick="testUsersFormat()">Check Users Format</button>
+        <div id="format-result"></div>
+    </div>
+
+    <div class="test">
+        <h3>Test Registration:</h3>
+        <button onclick="testRegistration()">Test User Registration</button>
+        <div id="registration-result"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://masterly-deploy-production.up.railway.app';
+
+        async function testConcepts() {
+            const resultDiv = document.getElementById('public-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/concepts`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Concepts Response:</h4>
+                    <p>Status: ${response.status}</p>
+                    <p>Type: ${typeof data}</p>
+                    <p>Is Array: ${Array.isArray(data)}</p>
+                    <p>Length: ${Array.isArray(data) ? data.length : 'N/A'}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Concepts test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('public-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Health Response:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Health test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testRoot() {
+            const resultDiv = document.getElementById('public-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Root Response:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Root test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testConceptsFormat() {
+            const resultDiv = document.getElementById('format-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/concepts`);
+                const data = await response.json();
+                
+                let analysis = `Data Type: ${typeof data}\n`;
+                analysis += `Is Array: ${Array.isArray(data)}\n`;
+                
+                if (Array.isArray(data)) {
+                    analysis += `Array Length: ${data.length}\n`;
+                    if (data.length > 0) {
+                        analysis += `First Item Keys: ${Object.keys(data[0]).join(', ')}\n`;
+                    }
+                } else if (typeof data === 'object') {
+                    analysis += `Object Keys: ${Object.keys(data).join(', ')}\n`;
+                }
+                
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Concepts Data Analysis:</h4>
+                    <pre>${analysis}</pre>
+                    <h4>Raw Data:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Format test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testUsersFormat() {
+            const resultDiv = document.getElementById('format-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/users`);
+                const data = await response.json();
+                
+                let analysis = `Data Type: ${typeof data}\n`;
+                analysis += `Is Array: ${Array.isArray(data)}\n`;
+                
+                if (Array.isArray(data)) {
+                    analysis += `Array Length: ${data.length}\n`;
+                    if (data.length > 0) {
+                        analysis += `First Item Keys: ${Object.keys(data[0]).join(', ')}\n`;
+                    }
+                } else if (typeof data === 'object') {
+                    analysis += `Object Keys: ${Object.keys(data).join(', ')}\n`;
+                }
+                
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Users Data Analysis:</h4>
+                    <pre>${analysis}</pre>
+                    <h4>Raw Data:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Format test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testRegistration() {
+            const resultDiv = document.getElementById('registration-result');
+            try {
+                const testUser = {
+                    firstName: "Test",
+                    lastName: "User",
+                    email: `test${Date.now()}@example.com`,
+                    password: "TestPassword123!"
+                };
+                
+                const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testUser)
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Registration Test:</h4>
+                    <p>Status: ${response.status}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Registration test failed: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Testing public endpoints...');
+            testHealth();
+        };
+    </script>
+</body>
+</html> 

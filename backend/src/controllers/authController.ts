@@ -13,8 +13,9 @@ const generateTokenAndSetCookie = (res: Response, userId: string) => {
     res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000,
+        domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
     });
 };
 
@@ -39,6 +40,8 @@ export const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     try {
         console.log('Login attempt for email:', email);
+        console.log('Request origin:', req.headers.origin);
+        console.log('Request cookies:', req.cookies);
         
         const user = await User.findOne({ email }).select('+password');
         console.log('User found:', !!user);
@@ -64,7 +67,9 @@ export const loginUser = async (req: Request, res: Response) => {
         }
         
         console.log('✅ Login successful');
+        console.log('Setting cookie with NODE_ENV:', process.env.NODE_ENV);
         generateTokenAndSetCookie(res, user._id.toString());
+        console.log('Cookie set, sending response');
         res.status(200).json({ _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role });
     } catch (error) {
         console.error('Login error:', error);
@@ -73,11 +78,20 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const logoutUser = (req: Request, res: Response) => {
-    res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
+    res.cookie('token', '', { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        expires: new Date(0) 
+    });
     res.status(200).json({ message: 'Logout successful' });
 };
 
 export const getMyProfile = (req: Request, res: Response) => {
+    console.log('getMyProfile called');
+    console.log('Request cookies:', req.cookies);
+    console.log('Request user:', req.user);
+    console.log('Request headers:', req.headers);
     res.status(200).json(req.user);
 };
 

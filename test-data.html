@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Database Data Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🗄️ Database Data Test</h1>
+    
+    <div class="test">
+        <h3>Backend URL: https://masterly-deploy-production.up.railway.app</h3>
+    </div>
+
+    <div class="test">
+        <h3>Test Database Connection:</h3>
+        <button onclick="testDatabase()">Test Database Info</button>
+        <div id="db-result"></div>
+    </div>
+
+    <div class="test">
+        <h3>Test Collections:</h3>
+        <button onclick="testConcepts()">Get Concepts</button>
+        <button onclick="testUsers()">Get Users</button>
+        <button onclick="testAdmins()">Get Admins</button>
+        <div id="collections-result"></div>
+    </div>
+
+    <div class="test">
+        <h3>Test API Endpoints:</h3>
+        <button onclick="testConceptsAPI()">Test /api/concepts</button>
+        <button onclick="testUsersAPI()">Test /api/users</button>
+        <div id="api-result"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://masterly-deploy-production.up.railway.app';
+
+        async function testDatabase() {
+            const resultDiv = document.getElementById('db-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/test-db`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Database Info:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Database test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testConcepts() {
+            const resultDiv = document.getElementById('collections-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/concepts`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Concepts Data (${data.length} items):</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Concepts test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testUsers() {
+            const resultDiv = document.getElementById('collections-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/users`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Users Data (${data.length} items):</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Users test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testAdmins() {
+            const resultDiv = document.getElementById('collections-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Admins Data:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Admins test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testConceptsAPI() {
+            const resultDiv = document.getElementById('api-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/concepts`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Concepts API Response:</h4>
+                    <p>Status: ${response.status}</p>
+                    <p>Count: ${data.length} concepts</p>
+                    <pre>${JSON.stringify(data.slice(0, 3), null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Concepts API failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testUsersAPI() {
+            const resultDiv = document.getElementById('api-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/users`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>Users API Response:</h4>
+                    <p>Status: ${response.status}</p>
+                    <p>Count: ${data.length} users</p>
+                    <pre>${JSON.stringify(data.slice(0, 3), null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Users API failed: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('Testing database connectivity...');
+            testDatabase();
+        };
+    </script>
+</body>
+</html> 

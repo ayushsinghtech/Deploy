@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 if (!process.env.NEXT_PUBLIC_API_URL) {
                     throw new Error('NEXT_PUBLIC_API_URL is not defined');
                 }
+                console.log('Checking auth with URL:', process.env.NEXT_PUBLIC_API_URL);
                 const response = await api.get('/auth/me');
                 console.log('Auth check response:', response.data);
                 if (response.data) {

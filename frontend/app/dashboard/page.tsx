@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import { useAuth } from "@/hooks/useAuth"
+import { apiService } from "@/lib/api"
 
 // --- Define an interface for the user data we expect from the backend ---
 interface User {
@@ -40,17 +41,32 @@ export default function Dashboard() {
         if (!user || authLoading) return;
         setLoading(true);
         setError(null);
-        const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
-        fetch(`${API_BASE}/users/${user._id}/analytics`, { credentials: "include" })
+        
+        console.log('Fetching analytics for user:', user._id);
+        
+        // Use apiService instead of direct fetch
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}/analytics`, { 
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then((res) => {
-                if (!res.ok) throw new Error("Failed to fetch analytics");
+                console.log('Analytics response status:', res.status);
+                if (!res.ok) {
+                    return res.text().then(text => {
+                        throw new Error(`Failed to fetch analytics: ${res.status} - ${text}`);
+                    });
+                }
                 return res.json();
             })
             .then((data) => {
+                console.log('Analytics data received:', data);
                 setAnalytics(data);
                 setLoading(false);
             })
             .catch((err) => {
+                console.error('Analytics fetch error:', err);
                 setError(err.message);
                 setLoading(false);
             });
