@@ -29,7 +29,7 @@ export default function AdminRegisterPage() {
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin/register`, form);
       setSuccess("Registration successful! Redirecting to login...");
-      setTimeout(() => router.push("/admin/login"), 1500);
+              setTimeout(() => router.push("/Admin/login"), 1500);
     } catch (err: any) {
       setError(err?.response?.data?.message || "Registration failed.");
     } finally {

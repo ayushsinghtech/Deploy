@@ -42,8 +42,8 @@ export default function AdminDashboard() {
           if (!ignore) {
             setAdmin(null);
             setLoading(false);
-            if (window.location.pathname !== "/admin/login") {
-              window.location.href = "/admin/login";
+            if (window.location.pathname !== "/Admin/login") {
+              window.location.href = "/Admin/login";
             }
           }
           return;
@@ -55,15 +55,15 @@ export default function AdminDashboard() {
           setTodos(Array.isArray(data.todos) ? data.todos : []);
           setLoading(false);
         }
-      } catch (error) {
-        if (!ignore) {
-          setAdmin(null);
-          setLoading(false);
-          if (window.location.pathname !== "/admin/login") {
-            window.location.href = "/admin/login";
+              } catch (error) {
+          if (!ignore) {
+            setAdmin(null);
+            setLoading(false);
+            if (window.location.pathname !== "/Admin/login") {
+              window.location.href = "/Admin/login";
+            }
           }
         }
-      }
     };
 
     fetchAdminData();
@@ -149,13 +149,13 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
-      window.location.href = "/admin/login";
+      window.location.href = "/Admin/login";
     }
   };
 
   const handleSettings = () => {
     setDropdownOpen(false);
-    router.push("/admin/settings");
+          router.push("/Admin/settings");
   };
 
   if (loading) {
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
               size="icon"
               aria-label="Notifications"
               className="relative text-gray-600 hover:bg-gray-100/50 dark:text-gray-300 dark:hover:bg-gray-700/50 rounded-full h-12 w-12"
-              onClick={() => router.push("/admin/emergency-contacts")}
+              onClick={() => router.push("/Admin/emergency-contacts")}
             >
               <Bell className="w-8 h-8" />
               {(emergencyCount > 0) && (
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = "";
                 (e.currentTarget as HTMLButtonElement).style.color = "";
               }}
-              onClick={() => router.push("/admin/todos")}
+              onClick={() => router.push("/Admin/todos")}
             >
               Manage To-Do
               {todos.length > 0 && (
@@ -359,7 +359,7 @@ export default function AdminDashboard() {
               <CardContent className="grid grid-cols-2 gap-4">
                 <div
                   className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800 transition"
-                  onClick={() => router.push("/admin/todos")}
+                  onClick={() => router.push("/Admin/todos")}
                 >
                   <p className="text-xs text-gray-500 dark:text-gray-400">Pending Tasks</p>
                   <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{todos.length}</p>
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
                 </div>
                 {todos.length > 3 && (
                   <div className="text-right mt-2">
-                    <Button variant="link" size="sm" onClick={() => router.push("/admin/todos")}>
+                    <Button variant="link" size="sm" onClick={() => router.push("/Admin/todos")}>
                       View All To-Do's &rarr;
                     </Button>
                   </div>
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-500 dark:text-gray-400">{emergencyCount} pending approval{emergencyCount === 1 ? "" : "s"}</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => router.push("/admin/emergency-contacts")}>
+                    <Button variant="outline" size="sm" onClick={() => router.push("/Admin/emergency-contacts")}>
                       Preview
                     </Button>
                   </div>
@@ -469,7 +469,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-500 dark:text-gray-400">5 pending requests</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => router.push("/admin/user-approvals")}>
+                    <Button variant="outline" size="sm" onClick={() => router.push("/Admin/user-approvals")}>
                       Review
                     </Button>
                   </div>
@@ -501,7 +501,7 @@ export default function AdminDashboard() {
 
             <Card
               className="hover:shadow-xl transition-all duration-300 group hover:scale-[1.03] border-0 shadow-sm dark:bg-gray-800 cursor-pointer"
-              onClick={() => router.push("/admin/users")}
+              onClick={() => router.push("/Admin/users")}
             >
               <CardContent className="p-6 flex flex-col items-center text-center">
                 <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
@@ -515,7 +515,7 @@ export default function AdminDashboard() {
                   className="mt-3 text-blue-600 dark:text-blue-400 group-hover:underline"
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push("/admin/users");
+                    router.push("/Admin/users");
                   }}
                 >
                   View <ArrowRight className="ml-1 w-4 h-4" />

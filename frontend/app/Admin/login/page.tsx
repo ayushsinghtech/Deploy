@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
       // Optionally, remove the sessionCheck if your backend sets the cookie correctly
       // and /admin/profile is protected.
       // Use window.location to ensure complete refresh and cookie processing
-      window.location.href = data.redirectUrl || "/admin";
+      window.location.href = data.redirectUrl || "/Admin";
       
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.")

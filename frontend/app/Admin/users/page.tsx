@@ -95,10 +95,10 @@ export default function AdminUsers() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => router.push("/admin/emergency-contacts")}>
+          <Button variant="outline" onClick={() => router.push("/Admin/emergency-contacts")}>
             Go to Emergency Contacts
           </Button>
-          <Button onClick={() => router.push("/admin")}>Return to Dashboard</Button>
+          <Button onClick={() => router.push("/Admin")}>Return to Dashboard</Button>
         </div>
       </div>
       <div className="space-y-4">

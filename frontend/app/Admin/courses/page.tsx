@@ -103,7 +103,7 @@ export default function AdminCourses() {
           <p className="text-gray-600 dark:text-gray-300">Create and manage your courses</p>
         </div>
         <Button asChild>
-          <Link href="/admin/courses/new">
+          <Link href="/Admin/courses/new">
             <span>
               <Plus className="w-4 h-4 mr-2" />
               Create Course
@@ -245,7 +245,7 @@ export default function AdminCourses() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={`/admin/courses/${course.id}`}>
+                          <Link href={`/Admin/courses/${course.id}`}>
                             <span>
                               <Eye className="w-4 h-4 mr-2" />
                               View Details
@@ -253,7 +253,7 @@ export default function AdminCourses() {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/admin/courses/${course.id}/edit`}>
+                          <Link href={`/Admin/courses/${course.id}/edit`}>
                             <span>
                               <Edit className="w-4 h-4 mr-2" />
                               Edit Course

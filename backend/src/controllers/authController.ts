@@ -226,7 +226,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
             role: admin.role,
             avatarUrl: admin.avatarUrl,
             permissions: admin.permissions,
-            redirectUrl: '/admin',
+            redirectUrl: '/Admin',
         });
     } catch (error) {
         console.error('Admin login error:', error);
