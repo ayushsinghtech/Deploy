@@ -130,7 +130,7 @@ export default function AdminSettingsPage() {
         <div className="flex items-center justify-between mb-6">
           <Button
             variant="outline"
-            onClick={() => router.push("/admin")}
+            onClick={() => router.push("/Admin")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Dashboard

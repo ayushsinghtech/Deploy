@@ -55,12 +55,12 @@ export default function AdminTodosPage() {
       <div className="flex items-center justify-between mb-8">
         <div
           className="flex items-center gap-2 cursor-pointer"
-          onClick={() => router.push("/admin")}
+          onClick={() => router.push("/Admin")}
         >
           <ArrowLeft className="w-5 h-5" />
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manage To-Do List</h1>
         </div>
-        <Button variant="outline" onClick={() => router.push("/admin")}>
+        <Button variant="outline" onClick={() => router.push("/Admin")}>
           Return to Dashboard
         </Button>
       </div>
