@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Admin Debug Test</h1>
+    
+    <div class="test-section info">
+        <h3>Environment Check</h3>
+        <p><strong>API URL:</strong> <span id="apiUrl">Loading...</span></p>
+        <p><strong>Current URL:</strong> <span id="currentUrl"></span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>Admin Registration Test</h3>
+        <input type="text" id="adminFirstName" placeholder="First Name" value="Admin">
+        <input type="text" id="adminLastName" placeholder="Last Name" value="User">
+        <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@masterly.com">
+        <input type="password" id="adminPassword" placeholder="Password" value="admin123">
+        <input type="text" id="adminPhone" placeholder="Phone" value="1234567890">
+        <br>
+        <button onclick="testAdminRegister()">Register Admin</button>
+        <div id="adminRegisterResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Admin Login Test</h3>
+        <input type="email" id="loginAdminEmail" placeholder="Admin Email" value="admin@masterly.com">
+        <input type="password" id="loginAdminPassword" placeholder="Password" value="admin123">
+        <button onclick="testAdminLogin()">Test Admin Login</button>
+        <div id="adminLoginResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Admin Profile Test</h3>
+        <button onclick="testAdminProfile()">Test Admin Profile</button>
+        <div id="adminProfileResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Emergency Contacts Test</h3>
+        <button onclick="testEmergencyContacts()">Test Emergency Contacts</button>
+        <div id="emergencyContactsResult"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://masterly-deploy-production.up.railway.app/api';
+        
+        // Display environment info
+        document.getElementById('apiUrl').textContent = API_BASE;
+        document.getElementById('currentUrl').textContent = window.location.href;
+
+        async function testAdminRegister() {
+            const resultDiv = document.getElementById('adminRegisterResult');
+            const firstName = document.getElementById('adminFirstName').value;
+            const lastName = document.getElementById('adminLastName').value;
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const phone = document.getElementById('adminPhone').value;
+            
+            resultDiv.innerHTML = '<p>Registering admin...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/register`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstName, lastName, email, password, phone })
+                });
+                
+                const data = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Admin Registration Successful</h4>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Admin Registration Failed</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Network Error</h4>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAdminLogin() {
+            const resultDiv = document.getElementById('adminLoginResult');
+            const email = document.getElementById('loginAdminEmail').value;
+            const password = document.getElementById('loginAdminPassword').value;
+            
+            resultDiv.innerHTML = '<p>Testing admin login...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Admin Login Successful</h4>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Admin Login Failed</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Network Error</h4>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAdminProfile() {
+            const resultDiv = document.getElementById('adminProfileResult');
+            
+            resultDiv.innerHTML = '<p>Testing admin profile...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/profile`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Admin Profile Successful</h4>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Admin Profile Failed</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Network Error</h4>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testEmergencyContacts() {
+            const resultDiv = document.getElementById('emergencyContactsResult');
+            
+            resultDiv.innerHTML = '<p>Testing emergency contacts...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/emergency-contacts`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Emergency Contacts Successful</h4>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Emergency Contacts Failed</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Network Error</h4>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

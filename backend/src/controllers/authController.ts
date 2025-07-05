@@ -194,23 +194,30 @@ export const loginAdmin = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'Email and password are required.' });
     }
     try {
+        console.log('Admin login attempt for email:', email);
+        console.log('Request origin:', req.headers.origin);
+        console.log('Request cookies:', req.cookies);
+        
         const admin = await Admin.findOne({ email });
         if (!admin) {
+            console.log('❌ Admin not found');
             return res.status(401).json({ message: 'Invalid credentials' });
         }
         // Compare hashed password
         const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) {
+            console.log('❌ Admin password does not match');
             return res.status(401).json({ message: 'Invalid credentials' });
         }
         const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+        console.log('Setting admin cookie with NODE_ENV:', process.env.NODE_ENV);
         res.cookie('admin_token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 24 * 60 * 60 * 1000,
         });
-        console.log("Admin logged in:", admin.email);
+        console.log("✅ Admin logged in:", admin.email);
         res.status(200).json({
             _id: admin._id,
             firstName: admin.firstName,
@@ -222,11 +229,15 @@ export const loginAdmin = async (req: Request, res: Response) => {
             redirectUrl: '/admin',
         });
     } catch (error) {
-        console.error(error);
+        console.error('Admin login error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
 export const getAdminProfile = (req: Request, res: Response) => {
+    console.log('getAdminProfile called');
+    console.log('Request cookies:', req.cookies);
+    console.log('Request user:', req.user);
+    console.log('Request headers:', req.headers);
     res.status(200).json(req.user);
 };
