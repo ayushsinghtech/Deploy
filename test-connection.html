@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend-Backend Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔗 Frontend-Backend Connection Test</h1>
+    
+    <div class="test">
+        <h3>Backend URL:</h3>
+        <p id="backend-url">https://masterly-deploy-production.up.railway.app</p>
+    </div>
+
+    <div class="test">
+        <h3>Test Backend Health:</h3>
+        <button onclick="testBackendHealth()">Test Backend Health</button>
+        <div id="health-result"></div>
+    </div>
+
+    <div class="test">
+        <h3>Test API Endpoints:</h3>
+        <button onclick="testAuthEndpoint()">Test /api/auth</button>
+        <button onclick="testConceptsEndpoint()">Test /api/concepts</button>
+        <div id="api-result"></div>
+    </div>
+
+    <div class="test">
+        <h3>CORS Test:</h3>
+        <button onclick="testCORS()">Test CORS from Frontend</button>
+        <div id="cors-result"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://masterly-deploy-production.up.railway.app';
+
+        async function testBackendHealth() {
+            const resultDiv = document.getElementById('health-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✅ Backend Health: ${JSON.stringify(data)}</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Backend Health Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testAuthEndpoint() {
+            const resultDiv = document.getElementById('api-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✅ Auth Endpoint: ${JSON.stringify(data)}</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Auth Endpoint Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testConceptsEndpoint() {
+            const resultDiv = document.getElementById('api-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/concepts`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✅ Concepts Endpoint: ${JSON.stringify(data)}</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Concepts Endpoint Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCORS() {
+            const resultDiv = document.getElementById('cors-result');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✅ CORS Test Success: ${JSON.stringify(data)}</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ CORS Test Failed: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html> 

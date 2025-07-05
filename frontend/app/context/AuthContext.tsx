@@ -29,7 +29,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // A helper instance of Axios
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
     withCredentials: true,
 });
 

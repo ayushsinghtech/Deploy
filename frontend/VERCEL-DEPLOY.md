@@ -25,7 +25,7 @@
 ### Step 4: Add Environment Variables (30 seconds)
 Add this environment variable:
 ```env
-NEXT_PUBLIC_API_URL=https://masterly-deploy-production.up.railway.app
+NEXT_PUBLIC_API_URL=https://masterly-deploy-production.up.railway.app/api
 ```
 
 ### Step 5: Deploy (1 minute)
