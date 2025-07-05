@@ -82,6 +82,42 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// Database connection test endpoint
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const mongoose = require('mongoose');
+        const connectionState = mongoose.connection.readyState;
+        const states: { [key: number]: string } = {
+            0: 'disconnected',
+            1: 'connected',
+            2: 'connecting',
+            3: 'disconnecting'
+        };
+        
+        res.json({ 
+            status: 'OK', 
+            database: states[connectionState] || 'unknown',
+            connectionState,
+            env: {
+                hasMongoUri: !!process.env.MONGODB_URI,
+                hasJwtSecret: !!process.env.JWT_SECRET,
+                nodeEnv: process.env.NODE_ENV
+            }
+        });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        res.status(500).json({ 
+            status: 'ERROR', 
+            error: errorMessage,
+            env: {
+                hasMongoUri: !!process.env.MONGODB_URI,
+                hasJwtSecret: !!process.env.JWT_SECRET,
+                nodeEnv: process.env.NODE_ENV
+            }
+        });
+    }
+});
+
 // Debug route to see all available routes
 app.get('/api/debug/routes', (req, res) => {
     const routes: any[] = [];
