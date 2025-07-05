@@ -17,7 +17,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import axios from "axios"
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
     withCredentials: true,
 });
 
@@ -94,7 +94,7 @@ export default function SignupPage() {
             setError("Frontend configuration error: API URL is not set.");
             return;
         }
-        window.location.href = `${apiUrl}/auth/${provider.toLowerCase()}`;
+        window.location.href = `${apiUrl}/api/auth/${provider.toLowerCase()}`;
     }
 
     const getStrengthColor = (strength: number) => {
