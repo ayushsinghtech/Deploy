@@ -1,4 +1,4 @@
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'https://masterly-deploy-production.up.railway.app/api');
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'https://masterly-deploy-production.up.railway.app');
 
 export interface Concept {
   _id: string;
@@ -116,17 +116,17 @@ class ApiService {
 
   // Search concepts by title
   async searchConcepts(query: string): Promise<Concept[]> {
-    return this.request<Concept[]>(`/concepts/search?q=${encodeURIComponent(query)}`);
+    return this.request<Concept[]>(`/api/concepts/search?q=${encodeURIComponent(query)}`);
   }
 
   // Get all concepts for dropdown
   async getAllConcepts(): Promise<Concept[]> {
-    return this.request<Concept[]>('/concepts');
+    return this.request<Concept[]>('/api/concepts');
   }
 
   // Get concept-specific quiz questions
   async getConceptQuiz(conceptId: string): Promise<ConceptQuiz> {
-    return this.request<ConceptQuiz>(`/concepts/${conceptId}/quiz`);
+    return this.request<ConceptQuiz>(`/api/concepts/${conceptId}/quiz`);
   }
 
   // Get recommendation path
@@ -136,19 +136,19 @@ class ApiService {
   ): Promise<RecommendationResponse> {
     console.log('Getting recommendation with params:', { goalConceptId, currentConceptId });
     return this.request<RecommendationResponse>(
-      `/recommendation/${goalConceptId}?currentConceptId=${currentConceptId}`
+      `/api/recommendation/${goalConceptId}?currentConceptId=${currentConceptId}`
     );
   }
 
   // Get user progress for mastery levels
   async getUserProgress(userId: string): Promise<UserConceptProgress[]> {
-    return this.request<UserConceptProgress[]>(`/users/${userId}/progress`);
+    return this.request<UserConceptProgress[]>(`/api/users/${userId}/progress`);
   }
 
   // Get user progress for a specific concept
   async getUserConceptProgress(userId: string, conceptId: string): Promise<number> {
     try {
-      const progress = await this.request<UserConceptProgress[]>(`/users/${userId}/progress`);
+      const progress = await this.request<UserConceptProgress[]>(`/api/users/${userId}/progress`);
       const conceptProgress = progress.find(p => p.conceptId === conceptId);
       return conceptProgress ? conceptProgress.score : 0;
     } catch (error) {
@@ -159,12 +159,12 @@ class ApiService {
 
   // Get current user (for authentication)
   async getCurrentUser(): Promise<{ _id: string; firstName: string; lastName: string; email: string }> {
-    return this.request('/auth/me');
+    return this.request('/api/auth/me');
   }
 
   // Login user
   async login(email: string, password: string): Promise<{ user: any; token: string }> {
-    return this.request('/auth/login', {
+    return this.request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -172,7 +172,7 @@ class ApiService {
 
   // Register user
   async register(userData: { firstName: string; lastName: string; email: string; password: string }): Promise<{ user: any; token: string }> {
-    return this.request('/auth/register', {
+    return this.request('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
@@ -180,7 +180,7 @@ class ApiService {
 
   // Logout user
   async logout(): Promise<void> {
-    return this.request('/auth/logout', {
+    return this.request('/api/auth/logout', {
       method: 'POST',
     });
   }
@@ -188,7 +188,7 @@ class ApiService {
   // Submit quiz and update user progress
   async submitQuiz(conceptId: string, score: number): Promise<{ message: string; achievements?: string[]; newlyUnlockedConcepts?: string[] }> {
     console.log('Submitting quiz with:', { conceptId, score });
-    return this.request<{ message: string; achievements?: string[]; newlyUnlockedConcepts?: string[] }>(`/quiz/submit/${conceptId}`, {
+    return this.request<{ message: string; achievements?: string[]; newlyUnlockedConcepts?: string[] }>(`/api/quiz/submit/${conceptId}`, {
       method: 'POST',
       body: JSON.stringify({ score }),
     });
@@ -204,7 +204,7 @@ class ApiService {
     selectedRoute: number;
   }): Promise<{ message: string }> {
     console.log('Saving learning path:', pathData);
-    return this.request<{ message: string }>('/learning-path/save', {
+    return this.request<{ message: string }>('/api/learning-path/save', {
       method: 'POST',
       body: JSON.stringify(pathData),
     });
@@ -220,7 +220,7 @@ class ApiService {
     selectedRoute: number;
   } | null> {
     try {
-      return await this.request('/learning-path/get');
+      return await this.request('/api/learning-path/get');
     } catch (error) {
       console.log('No saved learning path found');
       return null;
