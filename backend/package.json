@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/graphlib": "^2.1.12",
+    "@types/multer": "^2.0.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
@@ -23,6 +24,7 @@
     "graphlib": "^2.1.8",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
+    "multer": "^2.0.1",
     "nodemailer": "^7.0.3",
     "openai": "^4.104.0",
     "passport": "^0.7.0",
