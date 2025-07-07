@@ -8,7 +8,7 @@ import { Logo } from "@/components/ui/logo"
 import Link from "next/link"
 import Image from "next/image"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { useAuth } from "./context/AuthContext"
+import { useAuth } from "@/lib/auth-context"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function LandingPage() {

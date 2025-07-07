@@ -50,7 +50,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { apiService, Concept, RecommendationResponse } from "@/lib/api"
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "@/lib/auth-context"
 import { toast } from "@/hooks/use-toast"
 import { Progress } from "@/components/ui/progress"
 import { useRouter } from 'next/navigation'

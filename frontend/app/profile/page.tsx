@@ -29,7 +29,7 @@ import {
   Globe,
   User,
 } from "lucide-react"
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/lib/auth-context"
 
 export default function ProfilePage() {
   const { user, isLoading: authLoading } = useAuth()

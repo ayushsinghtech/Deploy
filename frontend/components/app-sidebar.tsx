@@ -3,7 +3,7 @@
 import { BookOpen, Home, Brain, Trophy, FileText, User, Settings, BarChart3, HelpCircle, GraduationCap } from "lucide-react"
 import { Logo } from "@/components/ui/logo"
 import Link from "next/link"
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/lib/auth-context"
 
 import {
   Sidebar,

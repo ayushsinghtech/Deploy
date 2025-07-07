@@ -11,7 +11,7 @@ import { BookOpen, Trophy, Target, Clock, TrendingUp, Play, CheckCircle, Brain, 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/lib/auth-context"
 import { apiService } from "@/lib/api"
 
 // --- Define an interface for the user data we expect from the backend ---
