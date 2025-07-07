@@ -45,7 +45,7 @@ export default function Dashboard() {
         console.log('Fetching analytics for user:', user._id);
         
         // Use apiService instead of direct fetch
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}/analytics`, { 
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user._id}/progress`, { 
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
