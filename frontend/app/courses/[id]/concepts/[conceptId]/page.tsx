@@ -72,7 +72,8 @@ export default function ConceptPage() {
     const fetchConcept = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/concepts/${conceptId}`)
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const response = await fetch(`${apiUrl}/api/concepts/${conceptId}`)
         if (!response.ok) {
           throw new Error('Failed to fetch concept')
         }
