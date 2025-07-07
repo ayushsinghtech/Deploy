@@ -14,15 +14,11 @@ import { Logo } from "@/components/ui/logo"
 import Link from "next/link" // This is the component that was likely mistyped
 import { useRouter } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
-import axios from "axios"
-
-const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
-    withCredentials: true,
-});
+import { useAuth } from "@/lib/auth-context"
 
 export default function SignupPage() {
     const router = useRouter()
+    const { register } = useAuth()
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -74,26 +70,22 @@ export default function SignupPage() {
         }
 
         try {
-            await api.post('/auth/register', {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                password: formData.password,
-            });
-            router.push("/dashboard");
+            const result = await register(formData.firstName, formData.lastName, formData.email, formData.password);
+            if (result.success) {
+                router.push("/dashboard");
+            } else {
+                setError(result.message);
+            }
         } catch (err: any) {
-            setError(err.response?.data?.message || "Registration failed. Please try again.");
+            console.error('Registration error:', err);
+            setError("Registration failed. Please try again.");
         } finally {
             setIsLoading(false)
         }
     }
 
     const handleSocialSignup = (provider: string) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!apiUrl) {
-            setError("Frontend configuration error: API URL is not set.");
-            return;
-        }
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://masterly-deploy-production.up.railway.app';
         window.location.href = `${apiUrl}/api/auth/${provider.toLowerCase()}`;
     }
 

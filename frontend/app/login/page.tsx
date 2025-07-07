@@ -14,16 +14,11 @@ import { Logo } from "@/components/ui/logo"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
-import axios from "axios"
-
-// A helper instance of Axios configured to talk to our backend
-const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
-    withCredentials: true, // This is CRUCIAL for sending cookies automatically
-});
+import { useAuth } from "@/lib/auth-context"
 
 export default function LoginPage() {
     const router = useRouter()
+    const { login } = useAuth()
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
@@ -39,24 +34,22 @@ export default function LoginPage() {
         setIsLoading(true)
         setError("")
         try {
-            await api.post('/auth/login', {
-                email: formData.email,
-                password: formData.password,
-            });
-            window.location.href = "/dashboard";
+            const result = await login(formData.email, formData.password);
+            if (result.success) {
+                router.push("/dashboard");
+            } else {
+                setError(result.message);
+            }
         } catch (err: any) {
-            setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+            console.error('Login error:', err);
+            setError("Login failed. Please check your credentials.");
         } finally {
             setIsLoading(false)
         }
     }
 
     const handleSocialLogin = (provider: string) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!apiUrl) {
-            setError("Frontend configuration error: API URL is not set.");
-            return;
-        }
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://masterly-deploy-production.up.railway.app';
         window.location.href = `${apiUrl}/api/auth/${provider.toLowerCase()}`;
     }
 

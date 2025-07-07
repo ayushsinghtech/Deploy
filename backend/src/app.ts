@@ -29,6 +29,8 @@ connectDB();
 app.use(cors({
     origin: [
         process.env.CLIENT_URL || 'http://localhost:3000',
+        'https://masterly-frontend.vercel.app',
+        'https://masterly-frontend.vercel.app/',
         'https://masterly-frontend-2icay86mb-ayushs-projects-c85cc04b.vercel.app',
         'https://masterly-deploy-frontend.vercel.app',
         'https://masterly-deploy.vercel.app',

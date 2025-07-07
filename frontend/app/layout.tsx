@@ -7,7 +7,7 @@ import { Toaster } from "@/components/toaster"
 
 
 // --- This path is now corrected to be relative ---
-import { AuthProvider } from "./context/AuthContext"
+import { AuthProvider } from "@/lib/auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 

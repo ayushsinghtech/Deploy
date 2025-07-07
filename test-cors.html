@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - Masterly</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 3px; }
+        button:hover { background: #0056b3; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; font-size: 12px; }
+        .status { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Masterly CORS Connection Test</h1>
+    <p>This page tests the connection between your frontend and backend after updating the CLIENT_URL environment variable.</p>
+    
+    <div class="test-section">
+        <h3>📋 Environment Information</h3>
+        <p><strong>Current Origin:</strong> <span id="origin" class="status">Loading...</span></p>
+        <p><strong>Backend URL:</strong> <span id="backendUrl" class="status">https://masterly-deploy-production.up.railway.app</span></p>
+        <p><strong>Expected CLIENT_URL:</strong> <span class="status">https://masterly-frontend.vercel.app</span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Basic Connection Test</h3>
+        <button onclick="testBasicConnection()">Test Basic Connection</button>
+        <div id="basicResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🍪 Authentication Test</h3>
+        <button onclick="testAuth()">Test Authentication Flow</button>
+        <div id="authResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔐 CORS Headers Test</h3>
+        <button onclick="testCORSHeaders()">Test CORS Headers</button>
+        <div id="corsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📝 Manual Test Instructions</h3>
+        <div class="warning">
+            <h4>If the tests above fail, follow these steps:</h4>
+            <ol>
+                <li>Go to your Railway dashboard</li>
+                <li>Select your backend project</li>
+                <li>Go to "Variables" tab</li>
+                <li>Update <code>CLIENT_URL</code> to: <code>https://masterly-frontend.vercel.app</code></li>
+                <li>Save and wait for redeployment (2-3 minutes)</li>
+                <li>Refresh this page and run tests again</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Display current origin
+        document.getElementById('origin').textContent = window.location.origin;
+        
+        const backendUrl = 'https://masterly-deploy-production.up.railway.app';
+
+        async function testBasicConnection() {
+            const resultDiv = document.getElementById('basicResult');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch(`${backendUrl}/api/health`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Basic Connection Successful</h4>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Response:</strong></p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <p><strong>CORS Headers:</strong></p>
+                        <pre>Access-Control-Allow-Origin: ${response.headers.get('Access-Control-Allow-Origin')}
+Access-Control-Allow-Credentials: ${response.headers.get('Access-Control-Allow-Credentials')}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Basic Connection Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>This usually indicates a CORS issue. Please update the CLIENT_URL in Railway.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAuth() {
+            const resultDiv = document.getElementById('authResult');
+            resultDiv.innerHTML = '<p>Testing authentication...</p>';
+            
+            try {
+                // Test registration
+                const testEmail = `test${Date.now()}@example.com`;
+                const registerResponse = await fetch(`${backendUrl}/api/auth/register`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        firstName: 'Test',
+                        lastName: 'User',
+                        email: testEmail,
+                        password: 'TestPassword123!'
+                    })
+                });
+                
+                if (registerResponse.ok) {
+                    const registerData = await registerResponse.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Authentication Test Successful</h4>
+                            <p><strong>Registration:</strong> Success</p>
+                            <p><strong>User Created:</strong> ${registerData.email}</p>
+                            <p><strong>Cookies Set:</strong> ${registerResponse.headers.get('set-cookie') ? 'Yes' : 'No'}</p>
+                            <pre>${JSON.stringify(registerData, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    const errorData = await registerResponse.text();
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Authentication Test Failed</h4>
+                            <p><strong>Status:</strong> ${registerResponse.status}</p>
+                            <p><strong>Error:</strong> ${errorData}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Authentication Test Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>This indicates a CORS or network issue.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCORSHeaders() {
+            const resultDiv = document.getElementById('corsResult');
+            resultDiv.innerHTML = '<p>Testing CORS headers...</p>';
+            
+            try {
+                const response = await fetch(`${backendUrl}/api/health`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                const isCorrectOrigin = corsHeaders['Access-Control-Allow-Origin'] === window.location.origin || 
+                                      corsHeaders['Access-Control-Allow-Origin'] === '*' ||
+                                      corsHeaders['Access-Control-Allow-Origin'] === 'https://masterly-frontend.vercel.app';
+                
+                resultDiv.innerHTML = `
+                    <div class="${isCorrectOrigin ? 'success' : 'error'}">
+                        <h4>${isCorrectOrigin ? '✅' : '❌'} CORS Headers Test</h4>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Expected Origin:</strong> ${window.location.origin}</p>
+                        <p><strong>Actual Origin:</strong> ${corsHeaders['Access-Control-Allow-Origin']}</p>
+                        <p><strong>All CORS Headers:</strong></p>
+                        <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>
+                        ${!isCorrectOrigin ? '<p><strong>⚠️ Warning:</strong> CORS origin mismatch. Update CLIENT_URL in Railway.</p>' : ''}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ CORS Headers Test Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

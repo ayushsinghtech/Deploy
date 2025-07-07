@@ -16,6 +16,7 @@ const generateTokenAndSetCookie = (res: Response, userId: string) => {
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000,
         domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
+        path: '/',
     });
 };
 
@@ -82,7 +83,8 @@ export const logoutUser = (req: Request, res: Response) => {
         httpOnly: true, 
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        expires: new Date(0) 
+        expires: new Date(0),
+        path: '/'
     });
     res.status(200).json({ message: 'Logout successful' });
 };
