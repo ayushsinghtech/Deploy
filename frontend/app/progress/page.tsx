@@ -38,7 +38,7 @@ export default function ProgressPage() {
     setLoading(true);
     setError(null);
     const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
-    fetch(`${API_BASE}/users/${user._id}/analytics`, { credentials: "include" })
+    fetch(`${API_BASE}/api/users/${user._id}/analytics`, { credentials: "include" })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch analytics");
         return res.json();
