@@ -83,7 +83,7 @@ export default function Courses() {
       try {
         setLoading(true)
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || ""
-        const response = await fetch(`${API_BASE}/concepts`, {
+        const response = await fetch(`${API_BASE}/api/concepts`, {
           credentials: "include"
         })
         
@@ -200,7 +200,7 @@ export default function Courses() {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || ""
         const statusPromises = courses.map(async (course) => {
           try {
-            const response = await fetch(`${API_BASE}/concepts/${course.id}/enrollment-status`, {
+            const response = await fetch(`${API_BASE}/api/concepts/${course.id}/enrollment-status`, {
               credentials: "include"
             })
             if (response.ok) {
@@ -232,7 +232,7 @@ export default function Courses() {
 
     try {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || ""
-      const response = await fetch(`${API_BASE}/concepts/${courseId}/enroll`, {
+      const response = await fetch(`${API_BASE}/api/concepts/${courseId}/enroll`, {
         method: 'POST',
         credentials: "include"
       })
