@@ -163,7 +163,7 @@ class ApiService {
   }
 
   // Login user
-  async login(email: string, password: string): Promise<{ user: any; token: string }> {
+  async login(email: string, password: string): Promise<any> {
     return this.request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
@@ -171,7 +171,7 @@ class ApiService {
   }
 
   // Register user
-  async register(userData: { firstName: string; lastName: string; email: string; password: string }): Promise<{ user: any; token: string }> {
+  async register(userData: { firstName: string; lastName: string; email: string; password: string }): Promise<any> {
     return this.request('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData),

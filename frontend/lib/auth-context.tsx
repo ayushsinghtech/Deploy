@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       const response = await apiService.login(email, password);
-      setUser(response.user);
+      setUser(response);
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
       return {
