@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Endpoints Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 API Endpoints Test</h1>
+    <p>Testing all API endpoints to ensure they're correctly configured with /api prefix.</p>
+    
+    <div class="test-section">
+        <h3>Health Check</h3>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <div id="healthResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Authentication Endpoints</h3>
+        <button onclick="testAuthEndpoints()">Test Auth Endpoints</button>
+        <div id="authResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Concepts Endpoints</h3>
+        <button onclick="testConceptsEndpoints()">Test Concepts Endpoints</button>
+        <div id="conceptsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Users Endpoints</h3>
+        <button onclick="testUsersEndpoints()">Test Users Endpoints</button>
+        <div id="usersResult"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://masterly-deploy-production.up.railway.app';
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Health Check Successful</h4>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Response:</strong></p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Health Check Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAuthEndpoints() {
+            const resultDiv = document.getElementById('authResult');
+            resultDiv.innerHTML = '<p>Testing auth endpoints...</p>';
+            
+            const endpoints = [
+                { name: 'Login', url: '/api/auth/login', method: 'POST', body: { email: 'test@test.com', password: 'test123' } },
+                { name: 'Register', url: '/api/auth/register', method: 'POST', body: { firstName: 'Test', lastName: 'User', email: 'test@test.com', password: 'test123' } },
+                { name: 'Get Current User', url: '/api/auth/me', method: 'GET' }
+            ];
+
+            let results = '';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const config = {
+                        method: endpoint.method,
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    };
+                    
+                    if (endpoint.body) {
+                        config.body = JSON.stringify(endpoint.body);
+                    }
+                    
+                    const response = await fetch(`${API_BASE_URL}${endpoint.url}`, config);
+                    const data = await response.text();
+                    
+                    results += `
+                        <div class="${response.ok ? 'success' : 'error'}">
+                            <h4>${response.ok ? '✅' : '❌'} ${endpoint.name}</h4>
+                            <p><strong>URL:</strong> ${endpoint.url}</p>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Response:</strong></p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } catch (error) {
+                    results += `
+                        <div class="error">
+                            <h4>❌ ${endpoint.name}</h4>
+                            <p><strong>URL:</strong> ${endpoint.url}</p>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultDiv.innerHTML = results;
+        }
+
+        async function testConceptsEndpoints() {
+            const resultDiv = document.getElementById('conceptsResult');
+            resultDiv.innerHTML = '<p>Testing concepts endpoints...</p>';
+            
+            const endpoints = [
+                { name: 'Get All Concepts', url: '/api/concepts', method: 'GET' },
+                { name: 'Search Concepts', url: '/api/concepts/search?q=array', method: 'GET' }
+            ];
+
+            let results = '';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint.url}`, {
+                        method: endpoint.method,
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+                    
+                    const data = await response.text();
+                    
+                    results += `
+                        <div class="${response.ok ? 'success' : 'error'}">
+                            <h4>${response.ok ? '✅' : '❌'} ${endpoint.name}</h4>
+                            <p><strong>URL:</strong> ${endpoint.url}</p>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Response:</strong></p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } catch (error) {
+                    results += `
+                        <div class="error">
+                            <h4>❌ ${endpoint.name}</h4>
+                            <p><strong>URL:</strong> ${endpoint.url}</p>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultDiv.innerHTML = results;
+        }
+
+        async function testUsersEndpoints() {
+            const resultDiv = document.getElementById('usersResult');
+            resultDiv.innerHTML = '<p>Testing users endpoints...</p>';
+            
+            const endpoints = [
+                { name: 'Get User Progress', url: '/api/users/test-user/progress', method: 'GET' }
+            ];
+
+            let results = '';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint.url}`, {
+                        method: endpoint.method,
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+                    
+                    const data = await response.text();
+                    
+                    results += `
+                        <div class="${response.ok ? 'success' : 'error'}">
+                            <h4>${response.ok ? '✅' : '❌'} ${endpoint.name}</h4>
+                            <p><strong>URL:</strong> ${endpoint.url}</p>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Response:</strong></p>
+                            <pre>${data}</pre>
+                        </div>
+                    `;
+                } catch (error) {
+                    results += `
+                        <div class="error">
+                            <h4>❌ ${endpoint.name}</h4>
+                            <p><strong>URL:</strong> ${endpoint.url}</p>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultDiv.innerHTML = results;
+        }
+    </script>
+</body>
+</html> 
