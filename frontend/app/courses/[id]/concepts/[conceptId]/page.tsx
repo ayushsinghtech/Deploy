@@ -72,14 +72,33 @@ export default function ConceptPage() {
     const fetchConcept = async () => {
       try {
         setLoading(true)
+        setError(null)
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const response = await fetch(`${apiUrl}/api/concepts/${conceptId}`)
+        console.log('Fetching concept with ID:', conceptId);
+        console.log('API URL:', apiUrl);
+        const fullUrl = `${apiUrl}/api/concepts/content/${conceptId}`;
+        console.log('Full URL:', fullUrl);
+        
+        const response = await fetch(fullUrl)
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch concept')
+          const errorText = await response.text();
+          console.error('Response error text:', errorText);
+          throw new Error(`Failed to fetch concept: ${response.status} ${response.statusText}`)
         }
+        
         const data = await response.json()
+        console.log('Fetched concept data:', data);
+        console.log('Concept has articleContent:', !!data.articleContent);
+        if (data.articleContent) {
+          console.log('ArticleContent levels:', data.articleContent.levels?.length);
+        }
+        
         setConcept(data)
       } catch (err) {
+        console.error('Fetch error:', err);
         setError(err instanceof Error ? err.message : 'Failed to load concept')
       } finally {
         setLoading(false)
