@@ -34,6 +34,8 @@ app.use(cors({
         'https://masterly-frontend-2icay86mb-ayushs-projects-c85cc04b.vercel.app',
         'https://masterly-deploy-frontend.vercel.app',
         'https://masterly-deploy.vercel.app',
+        'https://deploy-wheat-delta.vercel.app',
+        'https://deploy-wheat-delta.vercel.app/',
         'file://', // Allow local file access for testing
         'null', // Allow null origin for testing
         '*' // Allow all origins temporarily for testing
